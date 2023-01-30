@@ -1,0 +1,121 @@
+import React, { useState } from "react";
+
+import { SubmitHandler, useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+
+import { inputFeeSchema } from "../validation";
+
+import DateTimePicker from "react-datetime-picker";
+import "react-calendar/dist/Calendar.css";
+
+import InputBars from "../components/InputBars";
+
+type InputFeeSchema = z.infer<typeof inputFeeSchema>;
+
+const Form = () => {
+  const {
+    register,
+    formState: { errors },
+  } = useForm<InputFeeSchema>({
+    resolver: zodResolver(inputFeeSchema),
+  });
+
+  const onSubmit: SubmitHandler<InputFeeSchema> = (data) => console.log(data);
+  const [formData, setFormData] = useState({
+    cartValue: 0,
+    distance: 0,
+    itemsCount: 0,
+  });
+  const [dateAndTime, setDateAndTime] = useState(new Date());
+  const [fee, setFee] = useState(0);
+
+  let distanceFee = 2;
+  let cartValueFee = 0;
+  let bulkFee = 0;
+  let rushHourFee = 1;
+  const maxFee = 15;
+  const freeFee = 0;
+  const cartValueCap = 10;
+  const distanceFeeIncrementer = 500;
+  const bulkFeeIncrementer = 5;
+
+  const handleSubmit: React.FormEventHandler<HTMLFormElement> = (
+    e: React.FormEvent<HTMLFormElement>
+  ) => {
+    e.preventDefault();
+    const date = dateAndTime.toUTCString();
+    const hour = dateAndTime.getHours();
+
+    if (formData.cartValue >= 100) {
+      setFee(freeFee);
+      console.log(`Cart Value more than 100e --- Delivery Fee Free`);
+      return;
+    }
+
+    if (formData.cartValue < 10) {
+      cartValueFee = cartValueCap - formData.cartValue;
+    }
+    if (formData.distance >= 1000) {
+      distanceFee = Math.ceil(formData.distance / distanceFeeIncrementer);
+    }
+    if (formData.itemsCount >= 5 && formData.itemsCount <= 12) {
+      bulkFee = (formData.itemsCount - bulkFeeIncrementer) / 2 + 0.5;
+    }
+    if (formData.itemsCount >= 12) {
+      bulkFee = (formData.itemsCount - bulkFeeIncrementer) / 2 + 0.5 + 1.2;
+    }
+
+    if (date.includes("Fri") && hour >= 15 && hour <= 19) {
+      rushHourFee = 1.2;
+    }
+
+    let total = (cartValueFee + distanceFee + bulkFee) * rushHourFee;
+
+    console.log(`Cart Value Fee: ${cartValueFee}`);
+    console.log(`Distance Fee: ${distanceFee}`);
+    console.log(`Bulk Fee: ${bulkFee}`);
+    console.log(`Rush Hour Fee: x${rushHourFee}`);
+    console.log(`Total: ${total}`);
+
+    if (total >= 15) {
+      setFee(maxFee);
+      return;
+    }
+
+    setFee(total);
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData((prevState) => {
+      return {
+        ...prevState,
+        [e.target.name]: e.target.value,
+      };
+    });
+  };
+
+  return (
+    <>
+      <form onSubmit={handleSubmit}>
+        <InputBars
+          handleChange={handleChange}
+          cartValue={formData.cartValue}
+          distance={formData.distance}
+          itemsCount={formData.itemsCount}
+        />
+        <div>
+          <DateTimePicker
+            onChange={setDateAndTime}
+            value={dateAndTime}
+            disableClock={true}
+          />
+        </div>
+        <button>Calculate</button>
+      </form>
+      <p>Delivery Fee: {fee.toFixed(2)} €</p>
+    </>
+  );
+};
+
+export default Form;
