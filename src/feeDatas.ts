@@ -1,6 +1,5 @@
 export const maxDeliveryFeeFee: number = 15;
 export const freeDeliveryFee: number = 0;
-export const cartValueCap: number = 10;
 export const distanceFeeIncrementer: number = 500;
 export const bulkBaseFee: number = 0.5
 export const bulkFeeIncrementer: number = 5;

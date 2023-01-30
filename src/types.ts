@@ -1,3 +1,5 @@
+import { SubmitHandler } from "react-hook-form";
+
 export type InputBarsProps = {
   handleChange: React.ChangeEventHandler<HTMLInputElement | HTMLSelectElement>;
   cartValue: number;
@@ -6,5 +8,5 @@ export type InputBarsProps = {
 };
 
 export type FormProps = {
-  handleFee: React.Dispatch<React.SetStateAction<number>>;
+  onSubmit: SubmitHandler<{ cartValue: number; distance: number; itemsCount: number; dateAndTime: Date; }>
 };
