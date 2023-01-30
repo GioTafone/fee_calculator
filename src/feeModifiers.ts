@@ -1,5 +1,15 @@
-export const maxFee: number = 15;
-export const freeFee: number = 0;
+export const maxDeliveryFeeFee: number = 15;
+export const freeDeliveryFee: number = 0;
 export const cartValueCap: number = 10;
 export const distanceFeeIncrementer: number = 500;
+export const bulkBaseFee: number = 0.5
 export const bulkFeeIncrementer: number = 5;
+export const extraBulkFeeIncrementer: number = 12;
+export const extraBulkFeeSurcharge: number = 1.2
+export const cartValueFreeDelivery: number = 100
+export const smallPurchaseSurcharge: number = 10
+export const longDistanceSurcharge: number = 1000
+export const rushHourFeeIncrementer: number = 1.2
+export const weekDayRushHourFee: string = 'Fri'
+export const startRushHourFee: number = 15
+export const endRushHourFee: number = 19

@@ -4,13 +4,21 @@ import { z } from "zod";
 
 import { inputFeeSchema } from "../validation";
 import { FormProps } from "../types";
-
 import {
-  maxFee,
-  freeFee,
-  cartValueCap,
+  maxDeliveryFeeFee,
+  freeDeliveryFee,
   distanceFeeIncrementer,
+  bulkBaseFee,
   bulkFeeIncrementer,
+  extraBulkFeeIncrementer,
+  cartValueFreeDelivery,
+  smallPurchaseSurcharge,
+  longDistanceSurcharge,
+  extraBulkFeeSurcharge,
+  rushHourFeeIncrementer,
+  weekDayRushHourFee,
+  startRushHourFee,
+  endRushHourFee,
 } from "../feeModifiers";
 
 type ValidationInputFee = z.infer<typeof inputFeeSchema>;
@@ -23,7 +31,6 @@ function Form({ handleFee }: FormProps) {
   } = useForm<ValidationInputFee>({
     resolver: zodResolver(inputFeeSchema),
   });
-  console.log(errors)
 
   let distanceFee = 2;
   let cartValueFee = 0;
@@ -31,29 +38,38 @@ function Form({ handleFee }: FormProps) {
   let rushHourFee = 1;
 
   const onSubmit: SubmitHandler<ValidationInputFee> = (data) => {
+    const inputCartValue = data.cartValue;
+    const inputDistance = data.distance;
+    const inputItems = data.itemsCount;
     const date = new Date(data.dateAndTime).toUTCString();
     const hour = new Date(data.dateAndTime).getHours();
 
-    if (data.cartValue >= 100) {
-      handleFee(freeFee);
+    if (inputCartValue >= cartValueFreeDelivery) {
+      handleFee(freeDeliveryFee);
       return;
     }
-
-    if (data.cartValue < 10) {
-      cartValueFee = cartValueCap - data.cartValue;
+    if (inputCartValue < smallPurchaseSurcharge) {
+      cartValueFee = smallPurchaseSurcharge - inputCartValue;
     }
-    if (data.distance >= 1000) {
-      distanceFee = Math.ceil(data.distance / distanceFeeIncrementer);
+    if (inputDistance >= longDistanceSurcharge) {
+      distanceFee = Math.ceil(inputDistance / distanceFeeIncrementer);
     }
-    if (data.itemsCount >= 5 && data.itemsCount <= 12) {
-      bulkFee = (data.itemsCount - bulkFeeIncrementer) / 2 + 0.5;
+    if (
+      inputItems >= bulkFeeIncrementer &&
+      inputItems <= extraBulkFeeIncrementer
+    ) {
+      bulkFee = (inputItems - bulkFeeIncrementer) / 2 + bulkBaseFee;
     }
-    if (data.itemsCount >= 12) {
-      bulkFee = (data.itemsCount - bulkFeeIncrementer) / 2 + 0.5 + 1.2;
+    if (inputItems >= extraBulkFeeIncrementer) {
+      bulkFee =
+        (inputItems - bulkFeeIncrementer) / 2 + bulkBaseFee + extraBulkFeeSurcharge;
     }
-
-    if (date.includes("Fri") && hour >= 15 && hour <= 19) {
-      rushHourFee = 1.2;
+    if (
+      date.includes(weekDayRushHourFee) &&
+      hour >= startRushHourFee &&
+      hour <= endRushHourFee
+    ) {
+      rushHourFee = rushHourFeeIncrementer;
     }
 
     let total = (cartValueFee + distanceFee + bulkFee) * rushHourFee;
@@ -64,8 +80,8 @@ function Form({ handleFee }: FormProps) {
     console.log(`Rush Hour Fee: x${rushHourFee}`);
     console.log(`Total: ${total}`);
 
-    if (total >= 15) {
-      handleFee(maxFee);
+    if (total >= maxDeliveryFeeFee) {
+      handleFee(maxDeliveryFeeFee);
       return;
     }
 
@@ -75,7 +91,6 @@ function Form({ handleFee }: FormProps) {
   return (
     <>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <div>
           <label htmlFor="cartValue">Cart Value</label>
           <input
             type="number"
@@ -103,16 +118,14 @@ function Form({ handleFee }: FormProps) {
           />
           {errors.itemsCount && <span>{errors.itemsCount.message}</span>}
           <br />
-        </div>
-        <div>
           <label htmlFor="dateAntTime">Select date and time of delivery</label>
           <input
             type="datetime-local"
             id="dateAntTime"
             {...register("dateAndTime", { valueAsDate: true })}
           />
-        </div>
         {errors.dateAndTime && <span>{errors.dateAndTime.message}</span>}
+        <br />
         <button type="submit">Calculate</button>
       </form>
     </>
