@@ -7,7 +7,7 @@ import { FormProps } from "../types";
 
 type ValidationInputFee = z.infer<typeof inputFeeSchema>;
 
-function Form({ onSubmit }: FormProps) {
+const Form = ({ onSubmit }: FormProps) => {
   const {
     register,
     handleSubmit,
@@ -17,47 +17,73 @@ function Form({ onSubmit }: FormProps) {
   });
 
   return (
-    <>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <label htmlFor="cartValue">Cart Value</label>
-        <input
-          type="number"
-          placeholder="Type Amount"
-          id="cartValue"
-          {...register("cartValue", { valueAsNumber: true })}
-        />
-        {errors.cartValue && <span>{errors.cartValue.message}</span>}
-        <br />
-        <label htmlFor="distance">Distance</label>
-        <input
-          type="number"
-          placeholder="Type Distance"
-          id="distance"
-          {...register("distance", { valueAsNumber: true })}
-        />
-        {errors.distance && <span>{errors.distance.message}</span>}
-        <br />
-        <label htmlFor="items">Number of Items</label>
-        <input
-          type="number"
-          placeholder="Type number of items"
-          id="items"
-          {...register("itemsCount", { valueAsNumber: true })}
-        />
-        {errors.itemsCount && <span>{errors.itemsCount.message}</span>}
-        <br />
-        <label htmlFor="dateAntTime">Select date and time of delivery</label>
-        <input
-          type="datetime-local"
-          id="dateAntTime"
-          {...register("dateAndTime", { valueAsDate: true })}
-        />
-        {errors.dateAndTime && <span>{errors.dateAndTime.message}</span>}
-        <br />
-        <button type="submit">Calculate</button>
-      </form>
-    </>
+    <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col">
+      <label htmlFor="cartValue" className="font-bold px-10 my-1">Cart Value</label>
+      <input
+        type="number"
+        placeholder="Type Amount"
+        id="cartValue"
+        {...register("cartValue", { valueAsNumber: true })}
+        className="mx-10 px-2 py-1 border border-primaryGreen rounded-lg"
+      />
+      <p>
+        {errors.cartValue && (
+          <span className="px-10 text-xs text-primaryRed">
+            {errors.cartValue.message}
+          </span>
+        )}
+      </p>
+      <label htmlFor="distance" className="font-bold px-10 my-1">Distance</label>
+      <input
+        type="number"
+        placeholder="Type Distance"
+        id="distance"
+        {...register("distance", { valueAsNumber: true })}
+        className="mx-10 px-2 py-1 border border-primaryGreen rounded-lg"
+      />
+      <p>
+        {errors.distance && (
+          <span className="px-10 text-xs text-primaryRed">
+            {errors.distance.message}
+          </span>
+        )}
+      </p>
+      <label htmlFor="items" className="font-bold px-10 my-1">Number of Items</label>
+      <input
+        type="number"
+        placeholder="Type number of items"
+        id="items"
+        {...register("itemsCount", { valueAsNumber: true })}
+        className="mx-10 px-2 py-1 border border-primaryGreen rounded-lg"
+      />
+      <p>
+        {errors.itemsCount && (
+          <span className="px-10 text-xs text-primaryRed">
+            {errors.itemsCount.message}
+          </span>
+        )}
+      </p>
+
+      <label htmlFor="dateAntTime" className="font-bold px-10 my-1">Pick a Time</label>
+      <input
+        type="datetime-local"
+        id="dateAntTime"
+        {...register("dateAndTime", { valueAsDate: true })}
+        className="mx-10 px-2 py-1 border border-primaryGreen rounded-lg"
+      />
+      {errors.dateAndTime && (
+        <span className="px-10 text-xs text-primaryRed">
+          {errors.dateAndTime.message}
+        </span>
+      )}
+      <button
+        type="submit"
+        className="font-bold text-lg mx-10 my-4 px-2 py-1 rounded-lg bg-primaryBlack text-primaryWhite"
+      >
+        Calculate
+      </button>
+    </form>
   );
-}
+};
 
 export default Form;
