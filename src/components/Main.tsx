@@ -2,14 +2,16 @@ import { useState } from "react";
 import { SubmitHandler } from "react-hook-form";
 import { z } from "zod";
 import { inputFeeSchema } from "../validation";
+
 import Form from "../components/Form";
-import * as feeModifiers from "../feeModifiers";
+import { MainProps } from "../types";
+import { feeModifier } from "../feeModifiers";
 
 type ValidationInputFee = z.infer<typeof inputFeeSchema>;
 
-const Main = () => {
-  const [fee, setFee] = useState(0);
-  const [message, setMessage] = useState(false)
+const Main = ({ initialValue }: MainProps) => {
+  const [fee, setFee] = useState(initialValue);
+
   let distanceFee = 2;
   let cartValueFee = 0;
   let bulkFee = 0;
@@ -22,57 +24,57 @@ const Main = () => {
     const date = new Date(data.dateAndTime).toUTCString();
     const hour = new Date(data.dateAndTime).getHours();
 
-    if (inputCartValue >= feeModifiers.cartValueFreeDelivery) {
-      setFee(feeModifiers.freeDeliveryFee);
-      setMessage(true)
+    if (inputCartValue >= feeModifier.cartValueFreeDelivery) {
+      setFee(feeModifier.freeDeliveryFee);
       return;
     }
-    if (inputCartValue < feeModifiers.smallPurchaseSurcharge) {
-      cartValueFee = feeModifiers.smallPurchaseSurcharge - inputCartValue;
+    if (inputCartValue <= feeModifier.smallPurchaseSurcharge) {
+      cartValueFee = feeModifier.smallPurchaseSurcharge - inputCartValue;
     }
-    if (inputDistance >= feeModifiers.longDistanceSurcharge) {
+    if (inputDistance >= feeModifier.longDistanceSurcharge) {
       distanceFee = Math.ceil(
-        inputDistance / feeModifiers.distanceFeeIncrementer
+        inputDistance / feeModifier.distanceFeeIncrementer
       );
     }
     if (
-      inputItems >= feeModifiers.bulkFeeIncrementer &&
-      inputItems <= feeModifiers.extraBulkFeeIncrementer
+      inputItems >= feeModifier.bulkFeeIncrementer &&
+      inputItems <= feeModifier.extraBulkFeeIncrementer
     ) {
       bulkFee =
-        (inputItems - feeModifiers.bulkFeeIncrementer) / 2 +
-        feeModifiers.bulkBaseFee;
+        (inputItems - feeModifier.bulkFeeIncrementer) / 2 +
+        feeModifier.bulkBaseFee;
     }
-    if (inputItems >= feeModifiers.extraBulkFeeIncrementer) {
+    if (inputItems >= feeModifier.extraBulkFeeIncrementer) {
       bulkFee =
-        (inputItems - feeModifiers.bulkFeeIncrementer) / 2 +
-        feeModifiers.bulkBaseFee +
-        feeModifiers.extraBulkFeeSurcharge;
+        (inputItems - feeModifier.bulkFeeIncrementer) / 2 +
+        feeModifier.bulkBaseFee +
+        feeModifier.extraBulkFeeSurcharge;
     }
     if (
-      date.includes(feeModifiers.weekDayRushHourFee) &&
-      hour >= feeModifiers.startRushHourFee &&
-      hour <= feeModifiers.endRushHourFee
+      date.includes(feeModifier.weekDayRushHourFee) &&
+      hour >= feeModifier.startRushHourFee &&
+      hour <= feeModifier.endRushHourFee
     ) {
-      rushHourFee = feeModifiers.rushHourFeeIncrementer;
+      rushHourFee = feeModifier.rushHourFeeIncrementer;
     }
 
     let total = (cartValueFee + distanceFee + bulkFee) * rushHourFee;
 
-    console.log(`Cart Value Fee: ${cartValueFee}`);
-    console.log(`Distance Fee: ${distanceFee}`);
-    console.log(`Bulk Fee: ${bulkFee}`);
-    console.log(`Rush Hour Fee: x${rushHourFee}`);
-    console.log(`Total: ${total}`);
+    // ------ The following show the results of every input ------
+    // console.log(`Cart Value Fee: ${cartValueFee}`);
+    // console.log(`Distance Fee: ${distanceFee}`);
+    // console.log(`Bulk Fee: ${bulkFee}`);
+    // console.log(`Rush Hour Fee: x${rushHourFee}`);
+    // console.log(`Total: ${total}`);
 
-    if (total >= feeModifiers.maxDeliveryFeeFee) {
-      setFee(feeModifiers.maxDeliveryFeeFee);
+    if (total >= feeModifier.maxDeliveryFeeFee) {
+      setFee(feeModifier.maxDeliveryFeeFee);
       return;
     }
 
     setFee(total);
   };
-  
+
   return (
     <div className="border-4 rounded-2xl bg-primaryWhite lg:col-span-4">
       <h4 className="border-b-2 border-b-primaryGreen font-bold text-2xl text-center mx-7 py-5">
@@ -80,8 +82,7 @@ const Main = () => {
       </h4>
       <Form onSubmit={onSubmit} />
       <p className="border-t-2 border-t-primaryGreen text-center mx-7 py-5">
-        Delivery Fee:{" "}
-        {message ? <span className="font-bold">FREE</span> : <span className="font-bold">{fee.toFixed(2)} €</span>}
+        Delivery Fee: <span className="font-bold text-2xl">{fee.toFixed(2)} €</span>
       </p>
     </div>
   );
