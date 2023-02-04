@@ -8,8 +8,13 @@ export type InputBarsProps = {
 };
 
 export type FormProps = {
-  onSubmit: SubmitHandler<{ cartValue: number; distance: number; itemsCount: number; dateAndTime: Date; }>
+  onSubmit: SubmitHandler<{
+    cartValue: number;
+    distance: number;
+    itemsCount: number;
+    dateAndTime: Date;
+  }>;
 };
 export type MainProps = {
-  initialValue: number
+  initialValue: number;
 };

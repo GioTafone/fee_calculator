@@ -18,7 +18,9 @@ const Form = ({ onSubmit }: FormProps) => {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col">
-      <label htmlFor="cartValue" className="font-bold px-10 my-1">Cart Value - €</label>
+      <label htmlFor="cartValue" className="font-bold px-10 my-1">
+        Cart Value - €
+      </label>
       <input
         type="number"
         placeholder="Type Amount"
@@ -35,14 +37,16 @@ const Form = ({ onSubmit }: FormProps) => {
           </span>
         )}
       </p>
-      <label htmlFor="distance" className="font-bold px-10 my-1">Distance - m</label>
+      <label htmlFor="distance" className="font-bold px-10 my-1">
+        Distance - m
+      </label>
       <input
         type="number"
         placeholder="Type Distance"
         id="distance"
         aria-label="Distance"
         aria-invalid={errors.distance ? "true" : "false"}
-        {...register("distance", { valueAsNumber: true })}
+        {...register("distance", { required: true, valueAsNumber: true })}
         className="mx-10 px-2 py-1 border border-primaryGreen rounded-lg"
       />
       <p>
@@ -52,14 +56,16 @@ const Form = ({ onSubmit }: FormProps) => {
           </span>
         )}
       </p>
-      <label htmlFor="itemsCount" className="font-bold px-10 my-1">Number of Items</label>
+      <label htmlFor="itemsCount" className="font-bold px-10 my-1">
+        Number of Items
+      </label>
       <input
         type="number"
         placeholder="Type number of items"
         id="itemsCount"
         aria-label="Number of Items"
         aria-invalid={errors.itemsCount ? "true" : "false"}
-        {...register("itemsCount", { valueAsNumber: true })}
+        {...register("itemsCount", { required: true, valueAsNumber: true })}
         className="mx-10 px-2 py-1 border border-primaryGreen rounded-lg"
       />
       <p>
@@ -70,13 +76,15 @@ const Form = ({ onSubmit }: FormProps) => {
         )}
       </p>
 
-      <label htmlFor="dateAndTime" className="font-bold px-10 my-1">Pick a Date and Time</label>
+      <label htmlFor="dateAndTime" className="font-bold px-10 my-1">
+        Pick a Date and Time
+      </label>
       <input
         type="datetime-local"
         id="dateAndTime"
         aria-label="Pick a Date and Time"
         aria-invalid={errors.dateAndTime ? "true" : "false"}
-        {...register("dateAndTime", { valueAsDate: true })}
+        {...register("dateAndTime", { required: true, valueAsDate: true })}
         className="mx-10 px-2 py-1 border border-primaryGreen rounded-lg"
       />
       {errors.dateAndTime && (
@@ -86,7 +94,7 @@ const Form = ({ onSubmit }: FormProps) => {
       )}
       <button
         type="submit"
-        className="font-bold text-lg mx-10 my-4 px-2 py-1 rounded-lg bg-primaryBlack text-primaryWhite"
+        className="inline-block bg-primaryBlack text-primaryWhite mx-10 my-4 px-2 py-1 uppercase rounded shadow-xl hover:bg-gray-300 hover:shadow-lg focus:bg-gray-300 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-primaryZinc active:text-primaryBlack active:shadow-lg transition duration-100 ease-in-out"
         aria-label="Calculate"
       >
         Calculate

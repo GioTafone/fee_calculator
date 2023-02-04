@@ -10,10 +10,12 @@ module.exports = {
       },
     },
     colors: {
-      primaryGreen: "#75fa6a",
+      primaryGreen: "#07da63",
       primaryWhite: "#ffffff",
       primaryRed: "#A30000",
-      primaryBlack: "#212121"
+      primaryBlack: "#212121",
+      blue: "#0000ff",
+      primaryZinc: "#bac4c8"
     },
   },
   plugins: [],

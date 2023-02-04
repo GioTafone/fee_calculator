@@ -1,5 +1,3 @@
-import React from "react";
-
 const SideHeader = () => {
   return (
     <div className="lg:col-span-5 flex flex-col">

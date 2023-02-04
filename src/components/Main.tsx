@@ -1,21 +1,22 @@
 import { useState } from "react";
 import { SubmitHandler } from "react-hook-form";
 import { z } from "zod";
-import { inputFeeSchema } from "../validation";
 
 import Form from "../components/Form";
 import { MainProps } from "../types";
+import { inputFeeSchema } from "../validation";
 import { feeModifier } from "../feeModifiers";
+import { setUpValue } from "../setUpValue";
 
 type ValidationInputFee = z.infer<typeof inputFeeSchema>;
 
 const Main = ({ initialValue }: MainProps) => {
   const [fee, setFee] = useState(initialValue);
 
-  let distanceFee = 2;
-  let cartValueFee = 0;
-  let bulkFee = 0;
-  let rushHourFee = 1;
+  let distanceFee = setUpValue.distanceFee;
+  let cartValueFee = setUpValue.cartValueFee;
+  let bulkFee = setUpValue.cartValueFee;
+  let rushHourFee = setUpValue.rushHourFee;
 
   const onSubmit: SubmitHandler<ValidationInputFee> = (data) => {
     const inputCartValue = data.cartValue;
@@ -29,7 +30,8 @@ const Main = ({ initialValue }: MainProps) => {
       return;
     }
     if (inputCartValue <= feeModifier.smallPurchaseSurcharge) {
-      cartValueFee = feeModifier.smallPurchaseSurcharge - inputCartValue;
+      setUpValue.cartValueFee =
+        feeModifier.smallPurchaseSurcharge - inputCartValue;
     }
     if (inputDistance >= feeModifier.longDistanceSurcharge) {
       distanceFee = Math.ceil(
@@ -82,7 +84,8 @@ const Main = ({ initialValue }: MainProps) => {
       </h4>
       <Form onSubmit={onSubmit} />
       <p className="border-t-2 border-t-primaryGreen text-center mx-7 py-5">
-        Delivery Fee: <span className="font-bold text-2xl">{fee.toFixed(2)} €</span>
+        Delivery Fee:{" "}
+        <span className="font-bold text-2xl">{fee.toFixed(2)} €</span>
       </p>
     </div>
   );
