@@ -23,6 +23,7 @@ const Form = ({ onSubmit }: FormProps) => {
       </label>
       <input
         type="number"
+        step="0.01"
         placeholder="Type Amount"
         id="cartValue"
         aria-label="Cart Value"

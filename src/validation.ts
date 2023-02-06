@@ -4,7 +4,8 @@ export const inputFeeSchema = z.object({
   cartValue: z
     .number()
     .positive({ message: "Cart value must be a positive number" })
-    .min(1, { message: "Insert cart value" }),
+    .min(0.01, { message: "Insert cart value" })
+    .multipleOf(0.01, {message: "Partials of € cents non accepted"}),
   distance: z
     .number()
     .positive({ message: "Distance must be a positive number" })

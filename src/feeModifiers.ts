@@ -11,7 +11,7 @@ export const feeModifier = {
     smallPurchaseSurcharge: 10,
     longDistanceSurcharge: 1000,
     rushHourFeeIncrementer: 1.2,
-    weekDayRushHourFee: 'Fri',
     startRushHourFee: 15,
-    endRushHourFee: 19
+    endRushHourFee: 18,
+    rushHourWeekDays: ['Fri']
 }

@@ -30,8 +30,7 @@ const Main = ({ initialValue }: MainProps) => {
       return;
     }
     if (inputCartValue <= feeModifier.smallPurchaseSurcharge) {
-      setUpValue.cartValueFee =
-        feeModifier.smallPurchaseSurcharge - inputCartValue;
+      cartValueFee = feeModifier.smallPurchaseSurcharge - inputCartValue;
     }
     if (inputDistance >= feeModifier.longDistanceSurcharge) {
       distanceFee = Math.ceil(
@@ -52,29 +51,33 @@ const Main = ({ initialValue }: MainProps) => {
         feeModifier.bulkBaseFee +
         feeModifier.extraBulkFeeSurcharge;
     }
-    if (
-      date.includes(feeModifier.weekDayRushHourFee) &&
-      hour >= feeModifier.startRushHourFee &&
-      hour <= feeModifier.endRushHourFee
-    ) {
-      rushHourFee = feeModifier.rushHourFeeIncrementer;
-    }
+
+    feeModifier.rushHourWeekDays.map((day) => {
+      if (
+        date.includes(day) &&
+        hour >= feeModifier.startRushHourFee &&
+        hour <= feeModifier.endRushHourFee
+      ) {
+        rushHourFee = feeModifier.rushHourFeeIncrementer;
+      }
+      return rushHourFee;
+    });
 
     let total = (cartValueFee + distanceFee + bulkFee) * rushHourFee;
 
     // ------ The following show the results of every input ------
-    // console.log(`Cart Value Fee: ${cartValueFee}`);
-    // console.log(`Distance Fee: ${distanceFee}`);
-    // console.log(`Bulk Fee: ${bulkFee}`);
-    // console.log(`Rush Hour Fee: x${rushHourFee}`);
-    // console.log(`Total: ${total}`);
+    console.log(`Cart Value Fee: ${cartValueFee}`);
+    console.log(`Distance Fee: ${distanceFee}`);
+    console.log(`Bulk Fee: ${bulkFee}`);
+    console.log(`Rush Hour Fee: x${rushHourFee}`);
+    console.log(`Total: ${total}`);
+
+    setFee(total);
 
     if (total >= feeModifier.maxDeliveryFeeFee) {
       setFee(feeModifier.maxDeliveryFeeFee);
       return;
     }
-
-    setFee(total);
   };
 
   return (
