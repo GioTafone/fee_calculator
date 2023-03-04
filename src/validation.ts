@@ -4,7 +4,7 @@ export const inputFeeSchema = z.object({
   cartValue: z
     .number()
     .positive({ message: "Cart value <cannot be a negative number>" })
-    .min(0.01, { message: "Insert cart value" })
+    .min(0.01, { message: "Type the amount of the cart value" })
     .multipleOf(0.01, {message: "Partials of € cents non accepted"}),
   distance: z
     .number()
@@ -15,7 +15,7 @@ export const inputFeeSchema = z.object({
     .number()
     .positive({ message: "Number of items cannot be a negative number" })
     .int({ message: "Only integers numbers are valid" })
-    .min(1, { message: "Insert number of items" })
+    .min(1, { message: "Type the amount of items" })
     .max(500, { message: "Number of items must be below 500" }),
   dateAndTime: z
     .date()
